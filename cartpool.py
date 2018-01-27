@@ -6,13 +6,13 @@ import keras
 import lumusu.Agents.BasicAgent as Agent
 import os
 
-EPISODES = 2000
+EPISODES = 400
 
 if __name__ == '__main__':
 	env = gym.make('CartPole-v1')
 	state_size = env.observation_space.shape[0]
 	action_size = env.action_space.n
-	agent = Agent.CartpoolAgent(state_size, action_size)
+	agent = Agent.CartpoolAgent_(state_size, action_size)
 
 	done = False
 	batchsize = 32
