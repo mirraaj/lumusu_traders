@@ -9,8 +9,9 @@ from keras.optimizers import Adam
 # Variable Done checks if the buy signal has traded or not. If not
 # traded then the reward will be 0 .
 
-# Action 0 is Not Buy
-# Action 1 is Buy
+# Action 0 is short
+# Action 1 is neutral
+# Action 2 is long
 class traderSignal:
 	def __init__(self,input_size,action_size):
 		self.input_size = input_size
@@ -199,14 +200,7 @@ class traderOrder:
 	def Learn_from_memory(self,batch_size = 32):
 		minibatch = self.sample(self.memory,batch_size)
 		for state,action,reward,next_state,done in minibatch:
-			# if not done:
-			# 	reward = 0
-			# 	target = reward - self.model.predict(state)[0][action]
-			# if done:
-				# movingavg = self.movingaverage(state)
-				# action_value = self.Actionvalues(action)
-				# diff = movingavg * (1 + (action_value / 100)) - next_state[-1]
-				# reward = np.exp(- diff * 100 / next_state[-1])
+			
 			target = reward
 			if not done :
 				target = 0 + np.amax(self.model.predict(next_state))

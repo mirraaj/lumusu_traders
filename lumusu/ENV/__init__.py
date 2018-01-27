@@ -1,4 +1,4 @@
 import keras
-from . import TradeAgent
+from . import TradeGym
 
 # from 
