@@ -18,7 +18,7 @@ if __name__ == '__main__':
 	batchsize = 32
 
 	# If you want to save a weight or load a weight make the variable true
-	saveWeights = False
+	saveWeights = True
 	loadWeights = False
 
 	if loadWeights:
@@ -29,6 +29,7 @@ if __name__ == '__main__':
 		state = env.reset()
 		state = np.reshape(state, [1, state_size])
 		for time in range(500):
+			env.render()
 			action = agent.play(state) # playing a move as per our present state
 			next_state , reward , done , _ = env.step(action)
 			reward = reward if not done else -10 # reward is -10 when we loose the game
