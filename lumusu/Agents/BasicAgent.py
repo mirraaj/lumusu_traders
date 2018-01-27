@@ -1,5 +1,5 @@
 import random
-# import gym
+import gym
 import numpy as np
 from collections import deque
 from keras.models import Sequential
@@ -23,7 +23,7 @@ class CartpoolAgent:
 		model = Sequential()
 		model.add(Dense(32, input_dim = self.statesize , activation='relu'))
 		model.add(Dense(16, activation='relu'))
-		model.add(Dense(self.action_size, activation='linear')) # action size gives the number of actions to be taken
+		model.add(Dense(self.actionsize, activation='linear')) # action size gives the number of actions to be taken
 		model.compile(loss='mse',optimizer=Adam(lr=self.learning_rate))
 		return model
 
@@ -47,7 +47,7 @@ class CartpoolAgent:
 
 			playvalue = self.model.predict(state)
 			playvalue[0][action] = target # here we are storing the value of target to the present q value
-			self.model.fit(state, target_f, epochs=1, verbose=0)
+			self.model.fit(state, playvalue, epochs=1, verbose=0)
 		# reduce the value of epsilon for training	
 		if self.epsilon > self.epsilon_min:
 			self.epsilon *= self.epsilon_decay
