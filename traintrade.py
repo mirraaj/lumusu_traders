@@ -55,7 +55,7 @@ if __name__ == '__main__':
 			buy_signal_action , reward_bs ,adj_close , next_adj_close = utils.BuySignal(state,next_state,buy_signal)
 
 			if (not buy_signal_action):
-				buy_signal.remember(adj_close , buy_signal_action , reward_bs , next_adj_close, False)
+				buy_signal.remember(adj_close , buy_signal_action , reward_bs/days , next_adj_close, False)
 				state = next_state
 				next_state = env.step()	
 				days += 1
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 		while(not sell_sig_act):
 			sell_sig_act , reward_ss , sell_adj , sell_adj_next =utils.SellSignal(state,next_state,sell_signal)
 			if (not sell_sig_act):
-				sell_signal.remember(sell_adj,sell_sig_act,reward_ss,sell_adj_next)
+				sell_signal.remember(sell_adj,sell_sig_act,reward_ss/days,sell_adj_next)
 				state = next_state
 				next_state = env.step()
 				days += 1
@@ -90,14 +90,14 @@ if __name__ == '__main__':
 		else:
 			sell_price = (next_state['Close'].values)[-1]
 		profit = ( sell_price - buy_price )/ buy_price
-		profit_reward = 10*profit
+		profit_reward = 100*profit / days
 
-		avg_ret = avg_ret * (1 + profit)
+		# avg_ret = avg_ret * (1 + profit)
 
 		buy_signal.remember(adj_close , buy_signal_action , reward_bs + profit_reward , next_adj_close)
-		buy_order.remember(low_state , bo_action , reward_bo + profit_reward, low_nxt_state )	
+		buy_order.remember(low_state , bo_action , reward_bo, low_nxt_state )	
 		sell_signal.remember(sell_adj,sell_sig_act,reward_ss + profit_reward,sell_adj_next)
-		sell_order.remember(high_state , so_act ,reward_so + profit_reward, next_high_state)
+		sell_order.remember(high_state , so_act ,reward_so, next_high_state)
 
 		print ("Episode : {}/{} , profit : {}  , days : {} , alpha : {:.2} , epsilon : {:.2}".format(episode,EPISODES,profit,days,\
 			buy_signal.alpha,buy_signal.epsilon))
@@ -115,11 +115,16 @@ if __name__ == '__main__':
 			sell_order.replayMemory(batch_size)				
 
 
+# Code 2
+# Changes Done : Here I have removed profit award on order funtions.
+# Profit award = 100 * profit / days
+# Waiting award is divided by days wait
 
-# In this code the problem was :
-# It was learing to maximize days
-# Still giving negative profits
-# Maybe it maximises the award by waiting
-# Hence trying for a new profit funtion
+# Profits
 
+# Problems
+# Days are maximizing with negative profits . The program is learning to maximize days to increase
+# the awards. 
+
+# Try to Reduce the awards of waiting. Try 0 maybe it works?
 
