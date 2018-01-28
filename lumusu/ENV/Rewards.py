@@ -32,7 +32,7 @@ class Rewards:
 		# Action 0 : Not Buy
 		# Action 1 : Buy
 
-		ma_state_adj = self.MovingAverage(state)
+		ma_state = self.MovingAverage(state)
 		adj_next_state = next_state[-1]
 
 		if action == 1 :
@@ -44,7 +44,7 @@ class Rewards:
 			reward =  - np.sign(diff) * np.exp( diff )
 			return reward
 
-	def BuyOrderReward (self,action,state,next_state,lowpriceEstimate) :
+	def BuyOrderReward (self,state,next_state,lowpriceEstimate) :
 		# Action 0 = -12 %
 		# Action 1 = -7  %
 		# Action 2 = -3  %
@@ -55,12 +55,13 @@ class Rewards:
 
 		diff = lowpriceEstimate - next_state[-1]
 		reward = np.sign(diff) * np.exp(-diff)
+		return reward
 
-	def SellSignalAward (self,action , state , next_state ) :
+	def SellSignalReward (self,action , state , next_state ) :
 		# Action 0 : Hold
 		# Action 1 : Sell
 
-		ma_state_adj = self.MovingAverage(state)
+		ma_state = self.MovingAverage(state)
 		adj_next_state = next_state[-1]
 
 		if action == 0 :
@@ -72,7 +73,7 @@ class Rewards:
 			reward =  - np.sign(diff) * np.exp( diff )
 			return reward
 		
-	def SellOrderReward (self,action,state,next_state,highpriceEstimate) :
+	def SellOrderReward (self,state,next_state,highpriceEstimate) :
 		# Action 0 = -12 %
 		# Action 1 = -7  %
 		# Action 2 = -3  %
@@ -83,4 +84,4 @@ class Rewards:
 
 		diff = highpriceEstimate - next_state[-1]
 		reward = np.sign(diff) * np.exp(diff)	
-		
+		return reward

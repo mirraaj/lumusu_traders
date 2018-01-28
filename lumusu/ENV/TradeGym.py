@@ -17,7 +17,7 @@ class make:
 	def reset(self):
 		self.start = random.randrange(self.length - self.lookback) + self.lookback
 		self.state = self.data.iloc[range(self.start - self.lookback ,self.start),1:6]
-		self.next_state = self.data.iloc[range(self.start - self.lookback ,self.start),1:6]		
+		self.next_state = self.state
 		return self.state
 
 	def step(self):
