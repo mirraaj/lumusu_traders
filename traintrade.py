@@ -39,7 +39,9 @@ if __name__ == '__main__':
 	profit = 0
 	avg_ret = 1
 	profit_reward = 0.0
+	days = 0
 	for episode in range(EPISODES):
+		days = 0
 		profit = 0
 		profit_reward = - np.inf
 		buy_price = np.inf
@@ -51,10 +53,12 @@ if __name__ == '__main__':
 		
 		while (not buy_signal_action):
 			buy_signal_action , reward_bs ,adj_close , next_adj_close = utils.BuySignal(state,next_state,buy_signal)
+
 			if (not buy_signal_action):
 				buy_signal.remember(adj_close , buy_signal_action , reward_bs , next_adj_close, False)
 				state = next_state
 				next_state = env.step()	
+				days += 1
 		
 		bo_action , reward_bo , buy_est , low_state ,low_nxt_state , = utils.BuyOrder(state,next_state,sell_signal)
 		if (buy_est >=(low_nxt_state.values)[-1]) :
@@ -66,6 +70,7 @@ if __name__ == '__main__':
 		
 		state = next_state
 		next_state = env.step()
+		days += 1
 		# sell = env.copy()
 		sell_sig_act = 0
 		while(not sell_sig_act):
@@ -74,6 +79,7 @@ if __name__ == '__main__':
 				sell_signal.remember(sell_adj,sell_sig_act,reward_ss,sell_adj_next)
 				state = next_state
 				next_state = env.step()
+				days += 1
 
 		so_act , reward_so , sell_est , high_state , next_high_state = utils.SellOrder(state,next_state,sell_order)
 		
@@ -93,7 +99,8 @@ if __name__ == '__main__':
 		sell_signal.remember(sell_adj,sell_sig_act,reward_ss + profit_reward,sell_adj_next)
 		sell_order.remember(high_state , so_act ,reward_so + profit_reward, next_high_state)
 
-		print ("Episode : {}/{} , profit : {}  ".format(episode,EPISODES,profit))
+		print ("Episode : {}/{} , profit : {}  , days : {} , alpha : {:.2} , epsilon : {:.2}".format(episode,EPISODES,profit,days,\
+			buy_signal.alpha,buy_signal.epsilon))
 		
 		if len(buy_signal.memory) > batch_size:
 			buy_signal.replayMemory(batch_size)
@@ -109,6 +116,10 @@ if __name__ == '__main__':
 
 
 
-
+# In this code the problem was :
+# It was learing to maximize days
+# Still giving negative profits
+# Maybe it maximises the award by waiting
+# Hence trying for a new profit funtion
 
 
