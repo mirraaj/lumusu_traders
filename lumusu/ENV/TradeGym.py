@@ -5,12 +5,13 @@ import random
 
 # Store only ['Open', 'High', 'Low', 'Close', 'Adj Close'] in state
 class make:
-	def __init__(self,path,lookback = 8):
+	def __init__(self,path,lookback = 8,frac_data = 0.67):
 		self.data = pd.read_csv(path)
 		# self.data = self.data
 		self.action_space = 3 # long , neutral and short
 		self.lookback = lookback # how much back to look
-		self.length = len(self.data)
+		self.length = int(len(self.data) * frac_data)
+		self.data = self.data.iloc[:self.length,:] 
 		self.prev_action = 1 # Orignal Position is neutral (it notes buy or sell position)
 		self.buy_price = np.inf 
 		self.sell_price = np.inf
